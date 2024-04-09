@@ -21,13 +21,13 @@ Este é um simples aplicativo de lista de afazeres construído com React.
 1. Clone este repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
+git clone https://github.com/BrunoMateus28/to-do-list.git
 ```
 
 2. Navegue até o diretório do projeto:
 
 ```bash
-cd nome-do-repositorio
+cd to-do-list
 ```
 
 3. Instale as dependências:
