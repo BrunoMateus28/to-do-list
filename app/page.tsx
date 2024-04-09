@@ -7,7 +7,6 @@ import { BsTrash } from 'react-icons/bs';
 export default function Home() {
   const [todos, setTodos] = useState<{ id: number; text: string; completed: boolean }[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
-
   const inputRef = useRef<HTMLInputElement>(null);
 
   const loadTodos = () => {
@@ -17,6 +16,9 @@ export default function Home() {
     }
   };
 
+  const storeTODO = () =>{
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }
   useEffect(() => {
     loadTodos();
   }, []);
@@ -25,19 +27,23 @@ export default function Home() {
     if (inputValue.trim() !== '') {
       setTodos([...todos, { id: Date.now(), text: inputValue, completed: false }]);
       setInputValue('');
+      storeTODO();
     }
   };
 
   const handleToggleTodo = (id: number) => {
     setTodos(todos.map(todo => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)));
+    storeTODO();
   };
 
   const handleDeleteTodo = (id: number) => {
     setTodos(todos.filter(todo => todo.id !== id));
+    storeTODO();
   };
 
   const handleClearCompletedTodos = () => {
     setTodos(todos.filter(todo => !todo.completed));
+    storeTODO();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -45,10 +51,6 @@ export default function Home() {
       handleAddTodo();
     }
   };
-
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
 
   return (
     <div className="flex justify-center items-center h-screen" style={{ backgroundColor: '#8A9FB8' }}>
