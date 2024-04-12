@@ -16,34 +16,36 @@ export default function Home() {
     }
   };
 
-  const storeTODO = () =>{
+  const storeTodos = () => {
     localStorage.setItem('todos', JSON.stringify(todos));
-  }
+  };
+
   useEffect(() => {
     loadTodos();
   }, []);
 
   const handleAddTodo = () => {
     if (inputValue.trim() !== '') {
-      setTodos([...todos, { id: Date.now(), text: inputValue, completed: false }]);
+      const newTodo = { id: Date.now(), text: inputValue, completed: false };
+      setTodos([...todos, newTodo]);
       setInputValue('');
-      storeTODO();
+      storeTodos(); // Salvando os todos após a adição de um novo
     }
   };
 
   const handleToggleTodo = (id: number) => {
     setTodos(todos.map(todo => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)));
-    storeTODO();
+    storeTodos(); // Salvando os todos após a alteração de um todo
   };
 
   const handleDeleteTodo = (id: number) => {
     setTodos(todos.filter(todo => todo.id !== id));
-    storeTODO();
+    storeTodos(); // Salvando os todos após a exclusão de um todo
   };
 
   const handleClearCompletedTodos = () => {
     setTodos(todos.filter(todo => !todo.completed));
-    storeTODO();
+    storeTodos(); // Salvando os todos após a exclusão dos todos concluídos
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
