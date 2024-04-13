@@ -10,21 +10,22 @@ export default function Home() {
   const [inputValue, setInputValue] = useState<string>('');
   const [darkMode, setDarkMode] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  
   useEffect(() => {
-    const loadTheme = () => {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme) {
-        setDarkMode(savedTheme === 'dark');
-      }
-    };
+    let ignore = false;
+    if (!ignore){
+      loadTheme();
+      loadTodos();
+    }
+    return () => {ignore = true; }
+    },[]);
 
-    loadTheme();
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
-  }, [darkMode]);
+  const loadTheme = () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setDarkMode(savedTheme === 'dark');
+    }
+  };
 
   const loadTodos = () => {
     const savedTodos = localStorage.getItem('todos');
@@ -33,32 +34,28 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    loadTodos();
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
-
   const handleAddTodo = () => {
     if (inputValue.trim() !== '') {
       const newTodo = { id: Date.now(), text: inputValue, completed: false };
       setTodos([...todos, newTodo]);
       setInputValue('');
+      localStorage.setItem('todos', JSON.stringify(todos));
     }
   };
 
   const handleToggleTodo = (id: number) => {
     setTodos(todos.map(todo => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)));
+    localStorage.setItem('todos', JSON.stringify(todos));
   };
 
   const handleDeleteTodo = (id: number) => {
     setTodos(todos.filter(todo => todo.id !== id));
+    localStorage.setItem('todos', JSON.stringify(todos));
   };
 
   const handleClearCompletedTodos = () => {
     setTodos(todos.filter(todo => !todo.completed));
+    localStorage.setItem('todos', JSON.stringify(todos));
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -69,12 +66,13 @@ export default function Home() {
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
   };
 
   return (
     <div className={`flex justify-center items-center h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-800'}`}>
       <div className={`bg-${darkMode ? 'black' : 'white'} rounded-lg shadow-lg p-6 w-full max-w-md`} style={{ backgroundColor: darkMode ? '#282828' : '' }}>
-        <h1 className={`text-2xl font-semibold text-center mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>To Do List</h1>
+        <h1 className={`text-2xl font-semibold text-center mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Tarefas</h1>
         <ul className="space-y-2">
           {todos.map(todo => (
             <li key={todo.id} className={`flex items-center justify-between p-3 rounded-md ${darkMode ? 'bg-gray-800' : 'bg-gray-200'}`}>
