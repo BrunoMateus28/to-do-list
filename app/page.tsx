@@ -20,9 +20,10 @@ export default function Home() {
     return () => {ignore = true;}
     },[]);
 
-  const saveTodo = async () =>{
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }
+    useEffect(() => {
+      localStorage.setItem('todos', JSON.stringify(todos));
+      localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+    }, [todos, darkMode]);
 
   const loadTheme = () => {
     const savedTheme = localStorage.getItem('theme');
@@ -43,23 +44,19 @@ export default function Home() {
       const newTodo = { id: Date.now(), text: inputValue, completed: false };
       setTodos([...todos, newTodo]);
       setInputValue('');
-      saveTodo();
     }
   };
 
   const handleToggleTodo = async (id: number) => {
     setTodos(todos.map(todo => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)));
-    saveTodo();
   };
 
   const handleDeleteTodo = async (id: number) => {
     setTodos(todos.filter(todo => todo.id !== id));
-    saveTodo();
   };
 
   const handleClearCompletedTodos = async () => {
     setTodos(todos.filter(todo => !todo.completed));
-    saveTodo();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -70,7 +67,6 @@ export default function Home() {
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
-    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
   };
 
   return (
