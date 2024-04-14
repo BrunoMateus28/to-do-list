@@ -17,8 +17,12 @@ export default function Home() {
       loadTheme();
       loadTodos();
     }
-    return () => {ignore = true; }
+    return () => {ignore = true;}
     },[]);
+
+  const saveTodo = async () =>{
+    localStorage.setItem('todos', JSON.stringify(todos));
+  }
 
   const loadTheme = () => {
     const savedTheme = localStorage.getItem('theme');
@@ -34,28 +38,28 @@ export default function Home() {
     }
   };
 
-  const handleAddTodo = () => {
+  const handleAddTodo = async () => {
     if (inputValue.trim() !== '') {
       const newTodo = { id: Date.now(), text: inputValue, completed: false };
       setTodos([...todos, newTodo]);
       setInputValue('');
-      localStorage.setItem('todos', JSON.stringify(todos));
+      saveTodo();
     }
   };
 
-  const handleToggleTodo = (id: number) => {
+  const handleToggleTodo = async (id: number) => {
     setTodos(todos.map(todo => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)));
-    localStorage.setItem('todos', JSON.stringify(todos));
+    saveTodo();
   };
 
-  const handleDeleteTodo = (id: number) => {
+  const handleDeleteTodo = async (id: number) => {
     setTodos(todos.filter(todo => todo.id !== id));
-    localStorage.setItem('todos', JSON.stringify(todos));
+    saveTodo();
   };
 
-  const handleClearCompletedTodos = () => {
+  const handleClearCompletedTodos = async () => {
     setTodos(todos.filter(todo => !todo.completed));
-    localStorage.setItem('todos', JSON.stringify(todos));
+    saveTodo();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -98,13 +102,13 @@ export default function Home() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Adicionar novo afazer"
+            placeholder="Adicionar nova tarefa"
             className={`mt-4 flex-1 py-2 px-4 rounded-l-md border border-gray-300 focus:outline-none focus:ring-blue-400 focus:border-blue-400 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}
           />
           <button onClick={handleAddTodo} className={`mt-4 py-2 px-4 bg-blue-500 text-white rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-blue-400 focus:ring-2 ${darkMode ? 'hover:bg-blue-700' : 'hover:bg-blue-600'}`}>Adicionar</button>
         </div>
         <div className="flex space-x-2">
-          <button onClick={handleClearCompletedTodos} className={`flex-1 mt-4 py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-red-400 focus:ring-2 ${darkMode ? 'bg-red-500 text-white' : 'bg-red-500 text-white'}`}>Apagar concluídos</button>
+          <button onClick={handleClearCompletedTodos} className={`flex-1 mt-4 py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-red-400 focus:ring-2 ${darkMode ? 'bg-red-500 text-white' : 'bg-red-500 text-white'}`}>Apagar concluídas</button>
           <button onClick={toggleDarkMode} className={`mt-4 py-2 px-4 rounded-md ${darkMode ? 'bg-gray-500 text-white hover:bg-gray-600' : 'bg-gray-300 text-gray-800 hover:bg-gray-400'}`}>  {darkMode ? <FiSun size={20} /> : <FiMoon size={20} />}</button>
         </div>
       </div>
